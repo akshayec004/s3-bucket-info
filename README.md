@@ -16,10 +16,10 @@ s3-bucket-info.sh - Shell script to list out all the buckets and get bucket info
 * To view the bucket names and user access and secret keys, run the below command
   - aws cloudformation describe-stacks --stack-name s3-test
 * Upload objects to the newly created buckets.
-* Set the keys again with the keys of the IAM user created.
+* Setup the keys again with the keys of the IAM user created.
 * Run the shell script s3-bucket-info.sh to get the bucket and object information.
-* In order to run the script for the buckets owned by the company, first we need to set the keys that has read access for the buckets.
+* In order to run the script for the buckets owned by the company, first we need to configure the keys that has read access for the buckets.
 
 ### Enhancements
 * Creation of the CF stack can be automated using Jenkins or Codepipeline
-* The shell script can be enhanced to get object level info.
+* The shell script can be enhanced to get object level info
