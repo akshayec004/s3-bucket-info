@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "CF stack to create 3 S3 buckets, IAM user with access and secret keys and a policy with read and write permissions to the S3 buckets"
+Parameters:
+  UserName:
+    Description: Enter the username to be created with S3 access 
+    Type: String
+    Default: my-username
+Resources: 
+  s3Bucket1:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Bucket-1
+  s3Bucket2:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Bucket-2
+  s3Bucket3:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Bucket-3
+  iamUser:
+    Type: AWS::IAM::User
+    Properties:      
+      UserName:
+        !Ref UserName     
+  iamAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: 
+        !Ref UserName   
+    DependsOn: iamUser
+  iamPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: S3-Bucket-Access-vamastar     
+      Users:
+       - !Ref UserName
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action: s3:ListAllMyBuckets
+          Resource: "*"
+        - Effect: Allow
+          Action:
+          - s3:ListBucket
+          - s3:GetBucketLocation
+          Resource: !Sub 'arn:aws:s3:::${AWS::StackName}*'
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          - s3:PutObject
+          - s3:DeleteObject
+          Resource: !Sub 'arn:aws:s3:::${AWS::StackName}*/*'
+Outputs:
+  BucketName1:
+    Description: Name of the first S3 bucket created
+    Value: !Ref s3Bucket1
+  BucketName2:
+    Description: Name of the second S3 bucket created
+    Value: !Ref s3Bucket2
+  BucketName3:
+    Description: Name of the third S3 bucket created
+    Value: !Ref s3Bucket3
+  IAMUser:
+    Description: IAM Username Created
+    Value: !Ref UserName
+  AccessKeyId:
+    Description: Access Key of the user created
+    Value: !Ref iamAccessKey
+  SecretAccessKey:
+    Description: Access Key of the user created
+    Value: !GetAtt  iamAccessKey.SecretAccessKey
